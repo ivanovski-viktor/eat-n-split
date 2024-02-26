@@ -1,3 +1,9 @@
+import { useState } from "react";
+import Button from "./Components/Button";
+import FormAddFriend from "./Components/FormAddFriend";
+import FormSplitBill from "./Components/FormSplitBill";
+import FriendsList from "./Components/FriednsList";
+
 const initialFriends = [
   {
     id: 118836,
@@ -19,8 +25,41 @@ const initialFriends = [
   },
 ];
 
-function App() {
-  return <div className="App">Hello World!</div>;
-}
+export default function App() {
+  const [showAddFriend, setShowAddFriend] = useState(false);
+  const [friends, setFriends] = useState(initialFriends);
+  const [openSplitBill, setOpenSplitBill] = useState(false);
+  const [selectedFriend, setSelectedFriend] = useState({});
 
-export default App;
+  function toggleAddFriend() {
+    setShowAddFriend(!showAddFriend);
+  }
+
+  return (
+    <div className="app">
+      <div className="sidebar">
+        <FriendsList
+          data={friends}
+          openSplitBill={openSplitBill}
+          setOpenSplitBill={setOpenSplitBill}
+          setSelectedFriend={setSelectedFriend}
+        />
+        <FormAddFriend
+          setShowForm={setShowAddFriend}
+          showForm={showAddFriend}
+          setFriends={setFriends}
+          friends={friends}
+        />
+        <Button handleClick={toggleAddFriend}>
+          {!showAddFriend ? `Add Friend` : `Close`}
+        </Button>
+      </div>
+      <FormSplitBill
+        selectedFriend={selectedFriend}
+        openSplitBill={openSplitBill}
+        friends={friends}
+        setFriends={setFriends}
+      />
+    </div>
+  );
+}
