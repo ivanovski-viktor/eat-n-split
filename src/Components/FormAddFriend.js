@@ -1,50 +1,43 @@
 import { useState } from "react";
 import Button from "./Button";
 
-export default function FormAddFriend({ showForm, setFriends, setShowForm }) {
+export default function FormAddFriend({ onAddFriend }) {
   const [name, setName] = useState("");
-  const [image, setImage] = useState("https://i.pravatar.cc/48");
+  const [image, setImage] = useState("https://i.pravatar.cc/48?");
 
-  function handleSetName(e) {
-    setName(e.target.value);
-  }
-  function handleSetImgUrl(e) {
-    setImage(e.target.value);
-  }
-  function handleAddFriend(e) {
+  function handleSubmit(e) {
     e.preventDefault();
-    if (!name || !image) return;
-    setImage("https://i.pravatar.cc/48");
-    setName("");
+
     const id = crypto.randomUUID();
+    if (!name || !image) return;
     const newFriend = {
+      id,
       name,
       image: `${image}?=${id}`,
       balance: 0,
-      id: id,
     };
-    console.log(newFriend);
-    //Adding the friend in memmory(state)
-    setFriends((cs) => [...cs, newFriend]);
-    setShowForm(false);
+    onAddFriend(newFriend);
+
+    setName("");
+    setImage("https://i.pravatar.cc/48?");
   }
   return (
-    <>
-      {showForm ? (
-        <form className="form-add-friend" onSubmit={handleAddFriend}>
-          <label>👯Friend name</label>
-          <input value={name} onChange={(e) => handleSetName(e)} type="text" />
+    <form className="form-add-friend" onSubmit={handleSubmit}>
+      <label>👯Friend name</label>
+      <input
+        onChange={(e) => setName(e.target.value)}
+        value={name}
+        type="text"
+      />
 
-          <label>🖼️Image URL</label>
-          <input
-            value={image}
-            onChange={(e) => handleSetImgUrl(e)}
-            type="text"
-          />
+      <label>🖼️Image URL</label>
+      <input
+        onChange={(e) => setImage(e.target.value)}
+        value={image}
+        type="text"
+      />
 
-          <Button>Add</Button>
-        </form>
-      ) : null}
-    </>
+      <Button>Add</Button>
+    </form>
   );
 }
